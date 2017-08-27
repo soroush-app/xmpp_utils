@@ -200,18 +200,22 @@ make_xml(#xmpp_utils_xml{kind = Kind
 
 -spec
 make_xml(kind()
-        ,jid() | binary()
-        ,jid() | binary()
-        ,type()
-        ,id()
+        ,jid() | binary() | 'undefined'
+        ,jid() | binary() | 'undefined'
+        ,type() | 'undefined'
+        ,id() | 'undefined'
         ,children()) ->
     xmlel().
 make_xml(Kind, From, To, Type, Id, Children)
     when erlang:is_binary(Kind) andalso
-         (erlang:is_tuple(From) orelse erlang:is_binary(From)) andalso
-         (erlang:is_tuple(To) orelse erlang:is_binary(To)) andalso
-         erlang:is_binary(Type) andalso
-         erlang:is_binary(Id) andalso
+         (erlang:is_tuple(From) orelse
+          erlang:is_binary(From) orelse
+          From == undefined) andalso
+         (erlang:is_tuple(To) orelse
+          erlang:is_binary(To) orelse
+          To == undefined) andalso
+         (erlang:is_binary(Type) orelse Type == undefined) andalso
+         (erlang:is_binary(Id) orelse Id == undefined) andalso
          erlang:is_list(Children) ->
     io:format("salam\n"),
     make_xml(Kind, From, To, Type, Id, Children, []).
@@ -224,21 +228,24 @@ make_xml(Kind, From, To, Type, Id, Children)
 
 -spec
 make_xml(kind()
-        ,jid() | binary()
-        ,jid() | binary()
-        ,type()
-        ,id()
+        ,jid() | binary() | 'undefined'
+        ,jid() | binary() | 'undefined'
+        ,type() | 'undefined'
+        ,id() | 'undefined'
         ,children()
         ,[] | [{binary(), binary() | undefined | jid()}]) ->
     xmlel().
 make_xml(Kind, From, To, Type, Id, Children, Attrs)
     when erlang:is_binary(Kind) andalso
-         (erlang:is_tuple(From) orelse erlang:is_binary(From)) andalso
-         (erlang:is_tuple(To) orelse erlang:is_binary(To)) andalso
-         erlang:is_binary(Type) andalso
-         erlang:is_binary(Id) andalso
-         erlang:is_list(Children) andalso
-         erlang:is_list(Attrs) ->
+         (erlang:is_tuple(From) orelse
+          erlang:is_binary(From) orelse
+          From == undefined) andalso
+         (erlang:is_tuple(To) orelse
+          erlang:is_binary(To) orelse
+          To == undefined) andalso
+         (erlang:is_binary(Type) orelse Type == undefined) andalso
+         (erlang:is_binary(Id) orelse Id == undefined) andalso
+         erlang:is_list(Children) ->
     Fold =
         fun
             ({Key, Val}, Acc) when erlang:is_tuple(Val) ->
@@ -288,18 +295,22 @@ make_pkt(#xmpp_utils_xml{kind = Kind
 
 -spec
 make_pkt(kind()
-        ,jid() | binary()
-        ,jid() | binary()
-        ,type()
-        ,id()
+        ,jid() | binary() | 'undefined'
+        ,jid() | binary() | 'undefined'
+        ,type() | 'undefined'
+        ,id() | 'undefined'
         ,children()) ->
     binary().
 make_pkt(Kind, From, To, Type, Id, Children)
     when erlang:is_binary(Kind) andalso
-         (erlang:is_tuple(From) orelse erlang:is_binary(From)) andalso
-         (erlang:is_tuple(To) orelse erlang:is_binary(To)) andalso
-         erlang:is_binary(Type) andalso
-         erlang:is_binary(Id) andalso
+         (erlang:is_tuple(From) orelse
+          erlang:is_binary(From) orelse
+          From == undefined) andalso
+         (erlang:is_tuple(To) orelse
+          erlang:is_binary(To) orelse
+          To == undefined) andalso
+         (erlang:is_binary(Type) orelse Type == undefined) andalso
+         (erlang:is_binary(Id) orelse Id == undefined) andalso
          erlang:is_list(Children) ->
     exml:to_binary(make_xml(Kind, From, To, Type, Id, Children, [])).
 
@@ -311,21 +322,24 @@ make_pkt(Kind, From, To, Type, Id, Children)
 
 -spec
 make_pkt(kind()
-        ,jid() | binary()
-        ,jid() | binary()
-        ,type()
-        ,id()
+        ,jid() | binary() | 'undefined'
+        ,jid() | binary() | 'undefined'
+        ,type() | 'undefined'
+        ,id() | 'undefined'
         ,children()
         ,[] | [{binary(), binary() | undefined | jid()}]) ->
     binary().
 make_pkt(Kind, From, To, Type, Id, Children, Attrs)
     when erlang:is_binary(Kind) andalso
-         (erlang:is_tuple(From) orelse erlang:is_binary(From)) andalso
-         (erlang:is_tuple(To) orelse erlang:is_binary(To)) andalso
-         erlang:is_binary(Type) andalso
-         erlang:is_binary(Id) andalso
-         erlang:is_list(Children) andalso
-         erlang:is_list(Attrs) ->
+         (erlang:is_tuple(From) orelse
+          erlang:is_binary(From) orelse
+          From == undefined) andalso
+         (erlang:is_tuple(To) orelse
+          erlang:is_binary(To) orelse
+          To == undefined) andalso
+         (erlang:is_binary(Type) orelse Type == undefined) andalso
+         (erlang:is_binary(Id) orelse Id == undefined) andalso
+         erlang:is_list(Children) ->
     exml:to_binary(make_xml(Kind, From, To, Type, Id, Children, Attrs)).
 
 
