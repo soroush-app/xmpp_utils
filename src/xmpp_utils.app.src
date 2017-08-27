@@ -1,0 +1,9 @@
+{application
+,xmpp_utils
+,[{description, "Utilities for working on XMPP"}
+ ,{vsn, "0.1.0"}
+ ,{applications, [kernel, stdlib]}
+ ,{modules, [xmpp_utils]}
+ ,{maintainers, ["pouriya.jahanbakhsh@gmail.com"]}
+ ,{licenses, ["BSD 3-Clause"]}
+ ,{links, [{"GitHub", "https://github.com/soroush-app/xmpp_utils"}]}]}.

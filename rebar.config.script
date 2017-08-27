@@ -1,0 +1,8 @@
+case erlang:function_exported(rebar3, main, 1) of
+    true ->
+        io:format("Build exml library manually with rebar 2 with\n"
+                  "cd _build/default/lib/exml && rebar compile && cd ../../../..\n\n\n");
+    false ->
+        ok
+end,
+CONFIG.
