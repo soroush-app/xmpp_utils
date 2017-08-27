@@ -1,8 +1,20 @@
-case erlang:function_exported(rebar3, main, 1) of
+PrintWarning =
+    case erlang:function_exported(rebar3, main, 1) of
+        true ->
+            case file:list_dir("_build/default/lib/exml/priv") of
+                {ok, Files} ->
+                    not ((lists:member("exml_escape.so", Files)) andalso (lists:member("exml_event.so", Files)));
+                _ ->
+                    true
+            end;
+        false ->
+            false
+    end,
+if
+    PrintWarning ->
+        io:format("** WARNING ** Recompile 'exml' library manually with reabr 2 using:\n"
+                  "cd _build/default/lib/exml && rebar compile && cd ../../../..\n\n");
     true ->
-        io:format("Build exml library manually with rebar 2 with\n"
-                  "cd _build/default/lib/exml && rebar compile && cd ../../../..\n\n\n");
-    false ->
         ok
 end,
 CONFIG.
