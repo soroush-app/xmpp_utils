@@ -164,7 +164,7 @@ parse_xml(#xmlel{name = Name, attrs = Attrs, children = Children}) ->
                                     ,<<>>))
                    ,to = parse_jid(get_value(<<"to">>
                                   ,Attrs
-                                  ,#xmpp_utils_jid{}))
+                                  ,<<>>))
                    ,type = get_value(<<"type">>, Attrs, <<>>)
                    ,id = get_value(<<"id">>, Attrs, <<>>)
                    ,children = Children}.
