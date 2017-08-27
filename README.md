@@ -36,8 +36,15 @@ Eshell V8.3  (abort with ^G)
 5> xmpp_utils:make_pkt(xmpp_utils:set_from_to(<<"u@s/r">>, <<"g@conference.s">>, XMPP_XML)).
 <<"<message from='u@s/r' to='g@conference.s' type='chat' id='12345'><body>foo</body></message>">>
 
-6> xmpp_utils:make_pkt(<<"iq">>, <<"me@ourserver/Client1">>, {xmpp_utils_jid, <<"you">>, <<"ourserver">>, <<"Client2">>}, <<"get">>, <<"id1234567890">>, [{xmlel, <<"query">>, [{<<"xmlns">>, <<"urn:xmpp:ping">>}], []}]).
-<iq from='me@ourserver/Client1' to='you@ourserver/Client2' type='get' id='id1234567890'><query xmlns='urn:xmpp:ping'/></iq>
+6> xmpp_utils:make_pkt(<<"iq">> %% Kind of packet <<"iq">>, <<"presence">>, <<"message">>, etc.
+                      ,<<"me@ourserver/Client1">> %% From jid, can be binary or #xmpp_utils_jid{} record
+                      ,{xmpp_utils_jid, <<"you">>, <<"ourserver">>, <<"Client2">>} %% Destination(to) jid, can be binary or #xmpp_utils_jid{} record
+                      ,<<"get">> %% Type
+                      ,<<"id1234567890">> %% ID
+                      ,[{xmlel, <<"query">>, [{<<"xmlns">>, <<"urn:xmpp:ping">>}]}] %% Children
+                      ,[{<<"xml:lang">>, <<"en">>}] %% If packet has other attributes, defined them in this way
+                      ).
+<<"<iq xml:lang='en' from='me@ourserver/Client1' to='you@ourserver/Client2' type='get' id='id1234567890'><query xmlns='urn:xmpp:ping'/></iq>">>
 
 7> xmpp_utils:parse_jid(<<"me@server/res">>).
 {xmpp_utils_jid,<<"me">>,<<"server">>,<<"res">>}
@@ -63,6 +70,6 @@ Eshell V8.3  (abort with ^G)
 
 
 12> xmpp_utils:make_xmpp_error_pkt(<<"item-not-found">>, <<"Why item not found">>).
-<error type='cancel' code='404'><item-not-found xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/><text xml:lang='en' xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'>Why item not found</text></error>
+<<"<error type='cancel' code='404'><item-not-found xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/><text xml:lang='en' xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'>Why item not found</text></error>">>
 
 ```
