@@ -248,8 +248,12 @@ make_xml(Kind, From, To, Type, Id, Children, Attrs)
          erlang:is_list(Children) ->
     Fold =
         fun
-            ({Key, Val}, Acc) when erlang:is_tuple(Val) ->
+            ({_Key, #xmpp_utils_jid{server = <<>>}}, Acc) ->
+                Acc;
+            ({Key, #xmpp_utils_jid{}=Val}, Acc) ->
                 [{Key, make_jid(Val)}|Acc];
+            ({_Key, <<>>}, Acc) ->
+                Acc;
             ({_Key, Val}=Item, Acc) when erlang:is_binary(Val) ->
                 [Item|Acc];
             ({_Key, undefined}, Acc) ->
