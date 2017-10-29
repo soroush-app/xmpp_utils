@@ -356,45 +356,8 @@ make_pkt(Kind, From, To, Type, Id, Children, Attrs)
 parse_jid(binary()) ->
     jid().
 parse_jid(Bin) when erlang:is_binary(Bin) ->
-    % this is compiled pattern for:
-    %  ^(?:([^@/<>'\"]+)@)?([^@/<>'\"]+)(?:/([^<>'\"]*))?$
-    RegexPattern = {re_pattern
-                   ,3
-                   ,0
-                   ,0
-                   ,<<69,82,67,80,217,0,0,0,16,0,0,0,1,0,0,0,255,255,255
-                    ,255,255,255,255,255,0,0,0,0,0,0,3,0,0,0,64,0,0,0,0
-                    ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                    ,125,0,149,25,140,125,0,47,127,0,39,0,1,107,255,255
-                    ,255,255,123,127,255,175,254,255,255,255,255,255,255
-                    ,255,255,255,255,255,255,255,255,255,255,255,255,255
-                    ,255,255,255,255,100,114,0,39,29,64,114,0,47,127,0
-                    ,39,0,2,107,255,255,255,255,123,127,255,175,254,255
-                    ,255,255,255,255,255,255,255,255,255,255,255,255,255
-                    ,255,255,255,255,255,255,255,255,255,100,114,0,39
-                    ,140,125,0,47,29,47,127,0,39,0,3,107,255,255,255,255
-                    ,123,255,255,175,255,255,255,255,255,255,255,255,255
-                    ,255,255,255,255,255,255,255,255,255,255,255,255,255
-                    ,255,255,98,114,0,39,114,0,47,27,114,0,149,0>>},
-    case re:run(Bin, RegexPattern, [{capture, all, binary}]) of
-        {match, Jid} ->
-            case Jid of
-                [_, <<>>|_] ->
-                    #xmpp_utils_jid{username = <<>>
-                                   ,server = Bin
-                                   ,resource = <<>>};
-                [_, User, Server, Res] ->
-                    #xmpp_utils_jid{username = User
-                                   ,server = Server
-                                   ,resource = Res};
-                [_, User, Server] ->
-                    #xmpp_utils_jid{username = User
-                                   ,server = Server
-                                   ,resource = <<>>}
-            end;
-        nomatch ->
-            #xmpp_utils_jid{}
-    end.
+    parse_jid(Bin, <<>>, undefined, undefined).
+
 
 
 
@@ -728,3 +691,29 @@ concat([Bin2|Rest], Bin) when erlang:is_binary(Bin2) ->
     concat(Rest, <<Bin/binary, Bin2/binary>>);
 concat([], Bin) ->
     Bin.
+
+
+
+
+
+
+
+parse_jid(<<$@:8, Rest/bits>>, U, undefined, R) ->
+    parse_jid(Rest, U, <<>>, R);
+parse_jid(<<$/:8, Rest/bits>>, U, S, undefined) ->
+    parse_jid(Rest, U, S, <<>>);
+parse_jid(<<Char:8, Rest/bits>>, U, undefined, undefined) ->
+    parse_jid(Rest, <<U/bits, Char>>, undefined, undefined);
+parse_jid(<<Char:8, Rest/bits>>, U, S, undefined) ->
+    parse_jid(Rest, U, <<S/bits, Char>>, undefined);
+parse_jid(<<Char:8, Rest/bits>>, U, S, R) ->
+    parse_jid(Rest, U, S, <<R/bits, Char>>);
+parse_jid(<<>>, U, S, R) ->
+    case {U, S, R} of
+        {U, undefined, _} ->
+            #xmpp_utils_jid{username = <<>>, server = U, resource = <<>>};
+        {U, S, undefined} ->
+            #xmpp_utils_jid{username = U, server = S, resource = <<>>};
+        {U, S, R} ->
+            #xmpp_utils_jid{username = U, server = S, resource = R}
+    end.
