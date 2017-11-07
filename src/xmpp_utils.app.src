@@ -1,7 +1,7 @@
 {application
 ,xmpp_utils
 ,[{description, "Utilities for working on XMPP"}
- ,{vsn, "17.20.29"}
+ ,{vsn, "17.11.7"}
  ,{applications, [kernel, stdlib, fast_xml]}
  ,{modules, [xmpp_utils]}
  ,{maintainers, ["pouriya.jahanbakhsh@gmail.com"]}

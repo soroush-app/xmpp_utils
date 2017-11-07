@@ -34,7 +34,7 @@
 %%% POSSIBILITY OF SUCH DAMAGE.
 %%% --------------------------------------------------------------------
 %% @author   Pouriya Jahanbakhsh <pouriya.jahanbakhsh@gmail.com>
-%% @version  17.8.27
+%% @version  17.11.7
 %% @doc
 %%           This module provides fast and easy-to-use API for working
 %%           on well-known XMPP data structures.
