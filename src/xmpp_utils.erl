@@ -105,9 +105,6 @@
 %% ---------------------------------------------------------------------
 %% Types:
 
-
--type xmlel() :: #xmlel{}.
-
 -type xmpp_xml() :: #xmpp_utils_xml{}.
 
 -type jid() :: #xmpp_utils_jid{}.
@@ -144,8 +141,7 @@
 parse_pkt(binary()) ->
     xmpp_xml().
 parse_pkt(Bin) when erlang:is_binary(Bin) ->
-    {ok, #xmlel{}=XMLEl} = exml:parse(Bin),
-    parse_xml(XMLEl).
+    parse_xml(fxml_stream:parse_element(Bin)).
 
 
 
@@ -217,7 +213,6 @@ make_xml(Kind, From, To, Type, Id, Children)
          (erlang:is_binary(Type) orelse Type == undefined) andalso
          (erlang:is_binary(Id) orelse Id == undefined) andalso
          erlang:is_list(Children) ->
-    io:format("salam\n"),
     make_xml(Kind, From, To, Type, Id, Children, []).
 
 
@@ -289,7 +284,7 @@ make_pkt(#xmpp_utils_xml{kind = Kind
          erlang:is_binary(Type) andalso
          erlang:is_binary(Id) andalso
          erlang:is_list(Children) ->
-    exml:to_binary(make_xml(Kind, From, To, Type, Id, Children, [])).
+    fxml:element_to_binary(make_xml(Kind, From, To, Type, Id, Children, [])).
 
 
 
@@ -316,7 +311,7 @@ make_pkt(Kind, From, To, Type, Id, Children)
          (erlang:is_binary(Type) orelse Type == undefined) andalso
          (erlang:is_binary(Id) orelse Id == undefined) andalso
          erlang:is_list(Children) ->
-    exml:to_binary(make_xml(Kind, From, To, Type, Id, Children, [])).
+    fxml:element_to_binary(make_xml(Kind, From, To, Type, Id, Children, [])).
 
 
 
@@ -344,7 +339,7 @@ make_pkt(Kind, From, To, Type, Id, Children, Attrs)
          (erlang:is_binary(Type) orelse Type == undefined) andalso
          (erlang:is_binary(Id) orelse Id == undefined) andalso
          erlang:is_list(Children) ->
-    exml:to_binary(make_xml(Kind, From, To, Type, Id, Children, Attrs)).
+    fxml:element_to_binary(make_xml(Kind, From, To, Type, Id, Children, Attrs)).
 
 
 
@@ -511,7 +506,7 @@ make_xmpp_error(Reason) when erlang:is_binary(Reason) ->
 make_xmpp_error_pkt(binary()) ->
     binary().
 make_xmpp_error_pkt(Reason) when erlang:is_binary(Reason) ->
-    exml:to_binary(make_xmpp_error(Reason)).
+    fxml:element_to_binary(make_xmpp_error(Reason)).
 
 
 
@@ -588,7 +583,7 @@ make_xmpp_error_pkt(binary(), binary() | 'undefined') ->
 make_xmpp_error_pkt(Reason, ErrorText)
     when erlang:is_binary(Reason),
          (erlang:is_binary(ErrorText) orelse ErrorText == undefined) ->
-    exml:to_binary(make_xmpp_error(Reason, ErrorText)).
+    fxml:element_to_binary(make_xmpp_error(Reason, ErrorText)).
 
 
 
@@ -644,7 +639,7 @@ make_xmpp_error_pkt(Reason, Text, Type, Code)
          (erlang:is_binary(Text) orelse Text =:= undefined) andalso
          erlang:is_binary(Type) andalso
          erlang:is_integer(Code) ->
-    exml:to_binary(make_xmpp_error(Reason, Text, Type, Code)).
+    fxml:element_to_binary(make_xmpp_error(Reason, Text, Type, Code)).
 
 
 
@@ -686,7 +681,7 @@ get_value(Key, Attrs, Def) ->
 concat([#xmpp_utils_xml{}=X|Rest], Bin) ->
     concat(Rest, <<Bin/binary, (make_pkt(X))/binary>>);
 concat([#xmlel{}=X|Rest], Bin) ->
-    concat(Rest, <<Bin/binary, (exml:to_binary(X))/binary>>);
+    concat(Rest, <<Bin/binary, (fxml:element_to_binary(X))/binary>>);
 concat([Bin2|Rest], Bin) when erlang:is_binary(Bin2) ->
     concat(Rest, <<Bin/binary, Bin2/binary>>);
 concat([], Bin) ->
