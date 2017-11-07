@@ -1,4 +1,4 @@
--include_lib("exml/include/exml_stream.hrl").
+-include_lib("fast_xml/include/fxml.hrl").
 
 
 
@@ -15,4 +15,5 @@
                         ,to = #xmpp_utils_jid{}
                         ,type = <<>>
                         ,id = <<>>
-                        ,children = []}).
+                        ,children = []
+                        ,metadata = #{}}).
